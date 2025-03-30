@@ -23,13 +23,13 @@ resource "random_integer" "ri" {
 
 # Create the resource group
 resource "azurerm_resource_group" "arg" {
-  name     = var.resource_group_name
+  name     = "${var.resource_group_name}${random_integer.ri.result}"
   location = var.resource_group_location
 }
 
 #Create The Linux App Service Plan
 resource "azurerm_service_plan" "asp" {
-  name                = var.app_service_plan_name
+  name                ="${var.app_service_plan_name}${random_integer.ri.result}"
   resource_group_name = azurerm_resource_group.arg.name
   location            = azurerm_resource_group.arg.location
   os_type             = "Linux"
@@ -38,7 +38,7 @@ resource "azurerm_service_plan" "asp" {
 
 # Create the Web App Service Plan Pass In the Service Plan ID
 resource "azurerm_linux_web_app" "alwa" {
-  name                = var.app_service_name
+  name                = "${var.app_service_name}${random_integer.ri.result}"
   resource_group_name = azurerm_resource_group.arg.name
   location            = azurerm_service_plan.asp.location
   service_plan_id     = azurerm_service_plan.asp.id
@@ -66,7 +66,7 @@ resource "azurerm_mssql_server" "sqlserver" {
 }
 
 resource "azurerm_mssql_database" "database" {
-  name           = "TaskBoardDB${random_integer.ri.result}"
+  name           = "${var.sql_database_name}${random_integer.ri.result}"
   server_id      = azurerm_mssql_server.sqlserver.id
   collation      = "SQL_Latin1_General_CP1_CI_AS"
   license_type   = "LicenseIncluded"
@@ -87,4 +87,7 @@ resource "azurerm_app_service_source_control" "sc" {
   app_id   = azurerm_linux_web_app.alwa.id
   repo_url = var.repo_URL
   branch   = "main"
+  timeouts {
+    create = "60m"
+  }
 }
