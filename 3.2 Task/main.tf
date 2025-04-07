@@ -29,7 +29,7 @@ resource "azurerm_resource_group" "arg" {
 
 #Create The Linux App Service Plan
 resource "azurerm_service_plan" "asp" {
-  name                ="${var.app_service_plan_name}${random_integer.ri.result}"
+  name                = "${var.app_service_plan_name}${random_integer.ri.result}"
   resource_group_name = azurerm_resource_group.arg.name
   location            = azurerm_resource_group.arg.location
   os_type             = "Linux"
@@ -57,11 +57,7 @@ resource "azurerm_linux_web_app" "alwa" {
 }
 
 resource "azurerm_mssql_server" "sqlserver" {
-<<<<<<< HEAD
   name                         = "${var.sql_server_name}${random_integer.ri.result}"
-=======
-  name                         = var.sql_server_name
->>>>>>> bf694b365894b6beb6e6b267bc83111cdbb0ddb1
   resource_group_name          = azurerm_resource_group.arg.name
   location                     = azurerm_resource_group.arg.location
   version                      = "12.0"
